@@ -1,0 +1,329 @@
+*********************************   Prompt 1 ********************************************
+
+I’m working on a frontend developer practical assessment. One of the tasks is an LRU Cache / problem-solving task.
+
+I’m a beginner with data structures, so I want you to explain the task to me very simply before we write any code.
+
+Here is the exact task:
+
+TASK 2 — LRU CACHE / PROBLEM-SOLVING
+
+Implement a Least Recently Used (LRU) Cache supporting:
+
+Cache(capacity)
+get(key)
+put(key, value)
+
+Requirements:
+
+- Positive capacity
+- get(key) returns stored value if key exists; otherwise -1
+- successful get makes key most recently used
+- put inserts/updates key/value
+- when capacity exceeded remove least recently used
+- get and put O(1) average
+
+Example:
+
+cache = Cache(2)
+put A10
+put B20
+get A ->10
+put C30
+get B -> -1
+get C ->30
+get A ->10
+
+Submission (both fields required):
+
+- GitHub Repository containing source code, test/example code, README, run instructions.
+- README explains data structures and why, how LRU ordering maintained, time/space complexity, how to run.
+- Output Screenshot: clear screenshot showing actual program output/results: put operations, get operations, LRU eviction, returned values. Must be real generated output, not manually written/edited.
+  Optional bonus TTL/expiration with own screenshot + README explanation/trade-offs.
+
+First, do NOT give me the complete implementation yet.
+
+Instead:
+
+1. Explain in very simple terms what an LRU cache is and what this task is asking me to build.
+2. Explain the example operation by operation.
+3. Explain why a Hash Map and Doubly Linked List are commonly used for O(1) average get/put.
+4. Explain what the Hash Map does and what the Doubly Linked List does using a simple analogy.
+5. Show me visually how the cache order changes after each operation.
+6. Explain what I will need to submit for this task.
+7. Suggest a simple project/file structure suitable for this assessment.
+8. Tell me what programming language you recommend for this task and why, considering that I need to be able to understand and explain the code in an interview.
+
+Keep the explanation beginner-friendly. Do not assume I already understand linked lists, hash maps, Big-O, or LRU caches.
+
+
+
+
+
+
+*********************************   Prompt 2 ********************************************
+
+Yep i get it. I needed tp revisit linked list as i learned those last year.
+
+Let's implement Task 2 step by step.
+
+I want to use JavaScript/Node.js for the implementation because I need to be able to understand and explain the code during the assessment/interview.
+
+Please build the LRU Cache using:
+
+- A Hash Map
+- A Doubly Linked List
+
+Requirements:
+
+- Cache(capacity)
+- get(key)
+- put(key, value)
+- Positive capacity
+- get(key) returns the stored value if the key exists, otherwise -1
+- A successful get makes the key most recently used
+- put inserts a new key/value or updates an existing key/value
+- When capacity is exceeded, remove the least recently used key
+- get and put must be O(1) average
+
+Before giving me the final code, explain the implementation structure first.
+
+Then implement it step by step:
+
+1. Create the Node class for the doubly linked list.
+2. Create the LRU Cache class.
+3. Explain the constructor and every important variable.
+4. Explain how the Hash Map and linked list work together.
+5. Implement get().
+6. Implement put().
+7. Explain how an item is moved to the most-recently-used position.
+8. Explain how the least-recently-used item is removed.
+9. Walk through the exact assessment example manually using the actual implementation.
+
+Use simple JavaScript. Do not use a library that already provides an LRU cache because I need to demonstrate the data structure myself.
+
+Keep the code beginner-friendly and readable. Avoid unnecessary abstractions or advanced JavaScript features that make the implementation harder to explain.
+
+Do not add the optional TTL feature yet. We will consider that only after the required task is fully working.
+
+
+
+
+*********************************   Prompt 3 ********************************************
+
+My `src/LRUCache.js` is already implemented. Do not modify or recreate it.
+
+Now create `tests/test.js` to test my existing `LRUCache` implementation.
+
+The file should import the class using:
+
+```js
+const LRUCache = require("../src/LRUCache");
+
+```
+
+I need real executable tests, not just example comments or manually written expected output.
+
+Test the following:
+
+1. Basic `put()` and `get()`:
+   - Create a cache with capacity 2.
+   - Put A = 10.
+   - Put B = 20.
+   - Verify `get("A")` returns 10.
+   - Verify `get("B")` returns 20.
+2. LRU eviction using the exact assessment example:
+   - Create a cache with capacity 2.
+   - `put("A", 10)`
+   - `put("B", 20)`
+   - `get("A")` should return 10.
+   - `put("C", 30)`
+   - `get("B")` should return -1 because B is now the least recently used.
+   - `get("C")` should return 30.
+   - `get("A")` should return 10.
+3. Updating an existing key:
+   - Put A = 10.
+   - Put A = 50.
+   - Verify `get("A")` returns 50.
+   - Make sure updating A does not create a duplicate entry.
+4. `get()` changes LRU order:
+   - Capacity 2.
+   - Put A = 10.
+   - Put B = 20.
+   - Get A.
+   - Put C = 30.
+   - B should be evicted, while A and C should remain.
+5. Capacity of 1:
+   - Put A = 10.
+   - Put B = 20.
+   - Verify A returns -1 and B returns 20.
+6. Invalid capacity:
+   - Verify that creating `new LRUCache(0)` throws an error.
+   - Verify that creating `new LRUCache(-1)` throws an error.
+
+Use Node.js only. Do not install any testing framework such as Jest or Mocha unless there is a strong reason; keep this simple with Node's built-in `assert` module.
+
+The test file should:
+
+- Actually execute all tests when I run `node tests/test.js`.
+- Use `assert` to verify expected results.
+- Print clear, readable output showing each test and whether it passed.
+- Print the actual `get()` results for the main assessment example so I can use the terminal output later for the required screenshot.
+- End with a clear message indicating that all tests passed.
+
+Before giving me the final code, briefly explain what each test is checking and why these tests are relevant to the Task 2 requirements.
+
+Do not modify `src/LRUCache.js`.
+
+
+
+
+*********************************   Prompt 4 ********************************************
+
+ok i edited the code a bit and it looks like this now:
+const assert = require("assert");
+const LRUCache = require("../src/LRUCache");
+
+function runTest(testName, testFunction) {
+    try {
+        testFunction();
+        console.log(`✓ ${testName} - PASSED`);
+    } catch (error) {
+        console.log(`✗ ${testName} - FAILED`);
+        console.error(`  ${error.message}`);
+        process.exitCode = 1;
+    }
+}
+
+
+// 1. Basic put() and get()
+runTest("Basic put() and get()", () => {
+    const cache = new LRUCache(2);
+
+    cache.put("A", 10);
+    cache.put("B", 20);
+
+    assert.strictEqual(cache.get("A"), 10);
+    assert.strictEqual(cache.get("B"), 20);
+});
+
+
+// 2. LRU eviction using the exact assessment example
+runTest("LRU eviction - assessment example", () => {
+    const cache = new LRUCache(2);
+
+    cache.put("A", 10);
+    cache.put("B", 20);
+
+    const resultA = cache.get("A");
+    assert.strictEqual(resultA, 10);
+
+    cache.put("C", 30);
+
+    const resultB = cache.get("B");
+    assert.strictEqual(resultB, -1);
+
+    const resultC = cache.get("C");
+    assert.strictEqual(resultC, 30);
+
+    const resultAAgain = cache.get("A");
+    assert.strictEqual(resultAAgain, 10);
+});
+
+console.log("\nLRU Eviction - Assessment Example");
+
+const demoCache = new LRUCache(2);
+
+console.log("put(A, 10)");
+demoCache.put("A", 10);
+
+console.log("put(B, 20)");
+demoCache.put("B", 20);
+
+const demoA = demoCache.get("A");
+console.log(`get(A) -> ${demoA}`);
+
+console.log("put(C, 30)");
+demoCache.put("C", 30);
+
+const demoB = demoCache.get("B");
+console.log(`get(B) -> ${demoB}`);
+
+const demoC = demoCache.get("C");
+console.log(`get(C) -> ${demoC}`);
+
+const demoAAgain = demoCache.get("A");
+console.log(`get(A) -> ${demoAAgain}`);
+
+// 3. Updating an existing key
+runTest("Updating an existing key", () => {
+    const cache = new LRUCache(2);
+
+    cache.put("A", 10);
+    cache.put("A", 50);
+
+    assert.strictEqual(cache.get("A"), 50);
+});
+
+
+// 4. get() changes LRU order
+runTest("get() changes LRU order", () => {
+    const cache = new LRUCache(2);
+
+    cache.put("A", 10);
+    cache.put("B", 20);
+
+    // A becomes the most recently used item
+    assert.strictEqual(cache.get("A"), 10);
+
+    // C is inserted, so B should be evicted
+    cache.put("C", 30);
+
+    assert.strictEqual(cache.get("B"), -1);
+    assert.strictEqual(cache.get("A"), 10);
+    assert.strictEqual(cache.get("C"), 30);
+});
+
+
+// 5. Capacity of 1
+runTest("Capacity of 1", () => {
+    const cache = new LRUCache(1);
+
+    cache.put("A", 10);
+    cache.put("B", 20);
+
+    assert.strictEqual(cache.get("A"), -1);
+    assert.strictEqual(cache.get("B"), 20);
+});
+
+
+// 6. Invalid capacity
+runTest("Invalid capacity: 0", () => {
+    assert.throws(() => {
+        new LRUCache(0);
+    });
+});
+
+runTest("Invalid capacity: -1", () => {
+    assert.throws(() => {
+        new LRUCache(-1);
+    });
+});
+
+
+console.log("\n=================================");
+console.log("All LRU Cache tests passed!");
+console.log("=================================");
+
+
+
+
+
+
+*********************************   Prompt 5 ********************************************
+
+i need a readme.md write that including these
+
+The README should explain: data structures used and why, how LRU ordering is maintained, time complexity, space complexity, and how to run it.
+
+provide the md text only.
